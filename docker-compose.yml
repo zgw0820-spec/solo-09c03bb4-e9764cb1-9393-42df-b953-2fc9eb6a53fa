@@ -1,0 +1,46 @@
+# Two simulated station segments, each with its own UDP mDNS listener port.
+#
+#   segment station-a -> host udp/5353 -> 10.20.1.0/24
+#   segment station-b -> host udp/5354 -> 10.20.2.0/24
+#   HTTP query API    -> host tcp/8000
+#
+# Note: real mDNS uses the shared group 224.0.0.251:5353, which cannot be
+# isolated per network namespace without distinct interfaces. Because this
+# demo multiplexes two logical segments on one host, multicast membership is
+# disabled by default and each segment receives unicast datagrams on its own
+# port (see scripts/send_packet.py). Set JOIN_MULTICAST=true and give each
+# service its own interface only when deploying to real VLANs.
+services:
+  discovery:
+    build: .
+    image: station-mdns-discovery:1.0.0
+    container_name: station-mdns-discovery
+    restart: unless-stopped
+    environment:
+      SEGMENTS: "station-a:5353:10.20.1.0/24,station-b:5354:10.20.2.0/24"
+      BIND_HOST: "0.0.0.0"
+      HTTP_HOST: "0.0.0.0"
+      HTTP_PORT: "8000"
+      JOIN_MULTICAST: "false"
+      LOG_LEVEL: "INFO"
+    ports:
+      - "5353:5353/udp"   # station-a segment
+      - "5354:5354/udp"   # station-b segment
+      - "8000:8000/tcp"   # query API
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - |
+          import urllib.request
+          urllib.request.urlopen("http://127.0.0.1:8000/api/health", timeout=3)
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

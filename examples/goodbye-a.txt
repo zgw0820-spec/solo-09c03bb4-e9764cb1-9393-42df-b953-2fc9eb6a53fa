@@ -1,0 +1,6 @@
+record: _ipp._tcp.local. PTR ttl=0 flush=False -> Front Desk._ipp._tcp.local.
+record: Front Desk._ipp._tcp.local. SRV ttl=0 flush=True -> front-desk.local. port=631
+record: front-desk.local. A ttl=0 flush=True -> 10.20.1.10
+packet: 115 bytes -> 127.0.0.1:5353
+dest: 127.0.0.1:5353
+hex is in goodbye-a.hex (single line)

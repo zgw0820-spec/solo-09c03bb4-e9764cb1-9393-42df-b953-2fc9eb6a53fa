@@ -1,0 +1,4 @@
+record: front-desk.local. A ttl=120 flush=True -> 10.20.1.99
+packet: 44 bytes -> 127.0.0.1:5353
+dest: 127.0.0.1:5353
+hex is in flush-only-a.hex (single line)

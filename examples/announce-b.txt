@@ -1,0 +1,6 @@
+record: _ipp._tcp.local. PTR ttl=4500 flush=False -> Front Desk._ipp._tcp.local.
+record: Front Desk._ipp._tcp.local. SRV ttl=120 flush=True -> front-desk.local. port=631
+record: front-desk.local. A ttl=120 flush=True -> 10.20.2.20
+packet: 115 bytes -> 127.0.0.1:5354
+dest: 127.0.0.1:5354
+hex is in announce-b.hex (single line)
